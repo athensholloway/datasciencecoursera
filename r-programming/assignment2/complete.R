@@ -12,14 +12,13 @@ complete <- function(directory, id = 1:332) {
   ## ...
   ## where 'id' is the monitor ID number and 'nobs' is the
   ## number of complete cases
-  results <- list()
+  result <- numeric(0)
   
-  for(i in id) {
+  for (i in id) {
     path <- paste(directory, "/", sprintf("%03d.csv", i), sep="")
     data <- read.csv(path)
-    nobs <- nrow(data[complete.cases(data),])
-    results <- rbind(results, c(i, nobs))
+    result <- c(result, nrow(na.omit(data)))
   }
-  colnames(results) <- c("id","nobs")
-  results
+  
+  data.frame(id = id, nobs = result)
 }

@@ -6,14 +6,15 @@ corr <- function(directory, threshold = 0) {
   ## number of completely observed observations (on all
   ## variables) required to compute the correlation between
   ## nitrate and sulfate; the default is 0
-  filenames <- list.files(directory, pattern="*.csv", full.names=TRUE)
+  result <- numeric(0)
   
-  for(i in id) {
+  c <- complete(directory)
+  c <- c[c$nobs > threshold, ]
+  for (i in c$id) {
     path <- paste(directory, "/", sprintf("%03d.csv", i), sep="")
     data <- read.csv(path)
-    nobs <- nrow(data[complete.cases(data),])
-    results <- rbind(results, c(i, nobs))
-  }
+    result <- c(result, cor(data$sulfate, data$nitrate, use = "pairwise.complete.obs"))
+  } 
   
-  ## Return a numeric vector of correlations
+  return(result)
 }
